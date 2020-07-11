@@ -25,7 +25,7 @@ JWT_SECRET=XXX
 'guards' => [
     ...
     'api' => [
-        'driver' => 'laravel-jwt', 
+        'driver' => 'simple-jwt', 
         'provider' => 'users',
         'hash' => false,
     ],
