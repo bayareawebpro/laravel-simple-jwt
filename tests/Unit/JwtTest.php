@@ -26,6 +26,19 @@ class JwtTest extends TestCase
         ;
     }
 
+    public function test_authorized_header()
+    {
+        $user = factory(MockUser::class)->create();
+        $token = JsonWebToken::createForUser($user);
+        $this
+            ->json('GET',"/api/user", [], [
+                'Authorization'=>"Bearer {$token}"
+            ])
+            ->assertJson($user->toArray())
+            ->assertStatus(200)
+        ;
+    }
+
     public function test_valid_token()
     {
         $expires = now()->addRealSeconds(60);

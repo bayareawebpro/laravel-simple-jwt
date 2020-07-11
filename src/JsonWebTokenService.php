@@ -36,7 +36,9 @@ class JsonWebTokenService
             $app = App::getFacadeRoot();
             $token = $app->bound('jwt-decoded')
                 ? $app->get('jwt-decoded')
-                : $app->instance('jwt-decoded', JsonWebTokenService::parseToken($this->get($keyName)));
+                : $app->instance('jwt-decoded', JsonWebTokenService::parseToken(
+                    request()->bearerToken() ?? $this->get($keyName)
+                ));
             if ($key) {
                 return $token->get($key);
             }

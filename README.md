@@ -47,8 +47,15 @@ $token = JsonWebToken::createForUser(User::first(), now()->addHours(3), [
 
 
 ### Authenticate
+
+Query String
 ```text
 http://laravel.test/api/user?token=xxx
+```
+
+Or Header
+```text
+Authorization: Bearer XXX
 ```
 
 ### Get Claims From Token
