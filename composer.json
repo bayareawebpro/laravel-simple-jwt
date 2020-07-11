@@ -1,7 +1,7 @@
 {
     "name": "bayareawebpro/laravel-simple-jwt",
     "description": "JsonWebToken for Laravel",
-    "keywords": ["bayareawebpro", "laravel"],
+    "keywords": ["bayareawebpro", "laravel", "jwt", "token", "auth"],
     "homepage": "https://github.com/bayareawebpro/laravel-simple-jwt",
     "license": "MIT",
     "type": "library",
