@@ -1,4 +1,4 @@
-# Laravel Package Boilerplate
+# Laravel Simple JWT Authentication
 
 ![CI](https://github.com/bayareawebpro/laravel-simple-jwt/workflows/ci/badge.svg)
 ![Coverage](https://codecov.io/gh/bayareawebpro/laravel-simple-jwt/branch/master/graph/badge.svg)
