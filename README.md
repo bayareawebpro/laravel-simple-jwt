@@ -31,10 +31,6 @@ JWT_SECRET=xxx
         'hash' => false,
     ],
 ],
-'jwt' => [
-    'secret' => env('JWT_SECRET'),
-    'algorithm' => 'sha256',
-],
 ```
 
 ### Register in Auth Service Provider.
