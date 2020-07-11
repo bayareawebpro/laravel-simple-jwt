@@ -81,4 +81,14 @@ class JwtTest extends TestCase
         $this->assertIsString($secret);
         $this->assertSame(32, strlen($secret));
     }
+
+    public function test_request_macro()
+    {
+        $user = factory(MockUser::class)->create();
+        $token = JsonWebToken::createForUser($user, now()->addHours(1));
+        request()->merge(['token' => $token]);
+        $this->assertIsInt(request()->jwt('user'));
+        $this->assertIsBool(request()->jwt('valid'));
+        $this->assertIsString(request()->jwt('expires'));
+    }
 }
