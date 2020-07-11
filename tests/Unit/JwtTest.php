@@ -3,6 +3,7 @@
 use BayAreaWebPro\JsonWebToken\JsonWebToken;
 use BayAreaWebPro\JsonWebToken\Tests\Fixtures\Models\MockUser;
 use BayAreaWebPro\JsonWebToken\Tests\TestCase;
+use Illuminate\Support\Collection;
 
 class JwtTest extends TestCase
 {
@@ -87,6 +88,7 @@ class JwtTest extends TestCase
         $user = factory(MockUser::class)->create();
         $token = JsonWebToken::createForUser($user, now()->addHours(1));
         request()->merge(['token' => $token]);
+        $this->assertInstanceOf(Collection::class, request()->jwt());
         $this->assertIsInt(request()->jwt('user'));
         $this->assertIsBool(request()->jwt('valid'));
         $this->assertIsString(request()->jwt('expires'));
