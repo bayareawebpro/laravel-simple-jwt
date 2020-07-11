@@ -74,4 +74,11 @@ class JwtTest extends TestCase
         $this->assertSame($newToken->get('expires'), $extended->toDateTimeString());
         $this->assertNotSame($token->get('expires'), $newToken->get('expires'));
     }
+
+    public function test_generate_secret()
+    {
+        $secret = JsonWebToken::generateSecret(32);
+        $this->assertIsString($secret);
+        $this->assertSame(32, strlen($secret));
+    }
 }

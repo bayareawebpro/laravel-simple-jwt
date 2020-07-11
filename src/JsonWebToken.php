@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static string createForUser(Model $user, ?\Carbon\Carbon $expires = null, array $data = [])
  * @method static void register(string $model, string $keyName = 'token')
  * @method static \Illuminate\Support\Collection parseToken(string $token)
+ * @method static string generateSecret(int $length)
  * @see \BayAreaWebPro\JsonWebToken\JsonWebTokenService
  */
 class JsonWebToken extends Facade
