@@ -3,6 +3,7 @@
 namespace BayAreaWebPro\JsonWebToken;
 
 use stdClass;
+use Closure;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -18,6 +19,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class JsonWebTokenService
 {
+    protected static Closure $rejectionHandler;
+
     /**
      * Register The Model & Macros
      * @param string $model
@@ -57,7 +60,9 @@ class JsonWebTokenService
     {
         $headers = static::getHeaders();
         $payload = static::encodeData(array_merge([
-            "expires" => ($expires ?? Carbon::now()->addDays(30))->toDateTimeString(),
+            "jti"    => Str::uuid(),
+            "iat"    => now()->toDateTimeString(),
+            "exp" => ($expires ?? Carbon::now()->addDays(30))->toDateTimeString(),
             "user"    => $user->getKey(),
         ], $data));
 
@@ -74,12 +79,42 @@ class JsonWebTokenService
         if (Str::substrCount($token, '.') === 2) {
             list($headers, $payload, $signature) = explode('.', $token);
             if (static::verifySignature("{$headers}.{$payload}", $signature)) {
+
                 $tokenProperties = Collection::make(static::decodeData($payload));
-                $tokenProperties->put('valid', static::isValidTimestamp($tokenProperties->get('expires')));
+
+                $tokenProperties->put('valid',
+                    !static::isRejected($tokenProperties) &&
+                    !static::isFutureTimestamp($tokenProperties->get('iat')) &&
+                    static::isFutureTimestamp($tokenProperties->get('exp'))
+                );
                 return $tokenProperties;
             }
         }
         return Collection::make(['valid' => false]);
+    }
+
+    /**
+     * Register blacklist handler.
+     * @param Closure $closure
+     * @return void
+     */
+    public static function rejectionHandler(Closure $closure): void
+    {
+        static::$rejectionHandler = $closure;
+    }
+
+    /**
+     * Is the token not blacklisted?
+     * @param Collection $token
+     * @return bool
+     */
+    protected static function isRejected(Collection $token): bool
+    {
+        if(isset(static::$rejectionHandler)){
+            $closure = static::$rejectionHandler;
+            return $closure($token);
+        }
+        return false;
     }
 
     /**
@@ -165,7 +200,7 @@ class JsonWebTokenService
             $token
                 ->toBase()
                 ->except(['valid', 'alg', 'typ'])
-                ->put('expires', $carbon->toDateTimeString())
+                ->put('exp', $carbon->toDateTimeString())
                 ->merge($claims)
                 ->toArray()
         );
@@ -185,12 +220,12 @@ class JsonWebTokenService
     }
 
     /**
-     * Is the timestamp claim valid.
+     * Is the timestamp in the future.
      * @param string|null $timestamp
      * @return bool
      */
-    protected static function isValidTimestamp(?string $timestamp = null): bool
+    protected static function isFutureTimestamp(?string $timestamp = null): bool
     {
-        return Carbon::parse($timestamp)->greaterThanOrEqualTo(Carbon::now());
+        return Carbon::parse($timestamp)->greaterThan(Carbon::now());
     }
 }

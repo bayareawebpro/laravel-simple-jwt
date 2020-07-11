@@ -11,7 +11,7 @@ class JwtTest extends TestCase
     {
         $this
             ->json('GET',"/api/user?token=fake")
-            ->assertStatus(401)
+            ->assertUnauthorized()
         ;
     }
 
@@ -22,7 +22,7 @@ class JwtTest extends TestCase
         $this
             ->json('GET',"/api/user?token={$token}")
             ->assertJson($user->toArray())
-            ->assertStatus(200)
+            ->assertOk()
         ;
     }
 
@@ -35,7 +35,7 @@ class JwtTest extends TestCase
                 'Authorization'=>"Bearer {$token}"
             ])
             ->assertJson($user->toArray())
-            ->assertStatus(200)
+            ->assertOk()
         ;
     }
 
@@ -49,7 +49,7 @@ class JwtTest extends TestCase
 
         $this->assertTrue($token->get('valid'));
         $this->assertTrue($token->get('test'));
-        $this->assertSame($expires->toDateTimeString(), $token->get('expires'));
+        $this->assertSame($expires->toDateTimeString(), $token->get('exp'));
     }
 
     public function test_invalid_token()
@@ -69,7 +69,7 @@ class JwtTest extends TestCase
 
         $this
             ->json('GET',"/api/user?token={$token}")
-            ->assertStatus(401)
+            ->assertUnauthorized()
         ;
     }
 
@@ -85,8 +85,8 @@ class JwtTest extends TestCase
 
         $this->assertTrue($newToken->get('new'));
         $this->assertTrue($newToken->get('valid'));
-        $this->assertSame($newToken->get('expires'), $extended->toDateTimeString());
-        $this->assertNotSame($token->get('expires'), $newToken->get('expires'));
+        $this->assertSame($newToken->get('exp'), $extended->toDateTimeString());
+        $this->assertNotSame($token->get('exp'), $newToken->get('exp'));
     }
 
     public function test_generate_secret()
@@ -101,10 +101,11 @@ class JwtTest extends TestCase
         $user = factory(MockUser::class)->create();
         $token = JsonWebToken::createForUser($user, now()->addHours(1));
         request()->merge(['token' => $token]);
+
         $this->assertInstanceOf(Collection::class, request()->jwt());
         $this->assertIsInt(request()->jwt('user'));
         $this->assertIsBool(request()->jwt('valid'));
-        $this->assertIsString(request()->jwt('expires'));
+        $this->assertIsString(request()->jwt('exp'));
     }
 
     public function test_secret_command()
@@ -114,5 +115,18 @@ class JwtTest extends TestCase
             ->expectsOutput('JWT Secret')
             ->assertExitCode(0)
             ->execute();
+    }
+
+    public function test_blacklist()
+    {
+        $user = factory(MockUser::class)->create();
+        $token = JsonWebToken::createForUser($user, now()->addHours(1));
+        $tokenData = JsonWebToken::parseToken($token);
+
+        JsonWebToken::rejectionHandler(fn($parsed)=>$parsed->get('jti') === $tokenData->get('jti'));
+        $this
+            ->json('GET',"/api/user?token={$token}")
+            ->assertUnauthorized()
+        ;
     }
 }

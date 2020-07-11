@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static void register(string $model, string $keyName = 'token')
  * @method static \Illuminate\Support\Collection parseToken(string $token)
  * @method static string generateSecret(int $length)
+ * @method static void rejectionHandler(\Closure $closure)
  * @see \BayAreaWebPro\JsonWebToken\JsonWebTokenService
  */
 class JsonWebToken extends Facade

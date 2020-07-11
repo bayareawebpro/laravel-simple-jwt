@@ -69,6 +69,17 @@ $request->jwt('my_key');
 $newToken = JsonWebToken::extendToken(request()->jwt(), now()->addHours(3), ['key' => true]);
 ```
 
+### Blacklist Handler
+
+```php
+$bannedUUID = request()->jwt('jti');
+```
+```php
+JsonWebToken::rejectionHandler(fn($parsed)=>in_array($parsed->get('jti'),[
+    $bannedUUID
+]));
+```
+
 ### Testing
 ``` bash
 composer test
