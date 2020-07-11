@@ -93,4 +93,13 @@ class JwtTest extends TestCase
         $this->assertIsBool(request()->jwt('valid'));
         $this->assertIsString(request()->jwt('expires'));
     }
+
+    public function test_secret_command()
+    {
+        $this
+            ->artisan('jwt:secret')
+            ->expectsOutput('JWT Secret')
+            ->assertExitCode(0)
+            ->execute();
+    }
 }

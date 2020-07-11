@@ -10,15 +10,14 @@
 composer require bayareawebpro/laravel-simple-jwt
 ```
 
-
-### Make Encryption Secret
-```php
-JsonWebToken::generateSecret();
+### Create Encryption Secret
+```shell script
+artisan jwt:secret
 ```
 
 ### Add Secret to Environment File
 ```php
-JWT_SECRET=xxx
+JWT_SECRET=XXX
 ```
 
 ### Configure Auth.php
@@ -39,7 +38,7 @@ JWT_SECRET=xxx
 JsonWebToken::register(User::class, 'token');
 ```
 
-### Create New Token
+### Create New Token, Expiration, and Claims
 ```php
 $token = JsonWebToken::createForUser(User::first(), now()->addHours(3), [
   'my_key' => true
@@ -52,7 +51,7 @@ $token = JsonWebToken::createForUser(User::first(), now()->addHours(3), [
 http://laravel.test/api/user?token=xxx
 ```
 
-### Get Data From Token
+### Get Claims From Token
 ```php
 $request->jwt()->get('my_key');
 $request->jwt('my_key');
@@ -64,7 +63,6 @@ $newToken = JsonWebToken::extendToken(request()->jwt(), now()->addHours(3), ['ke
 ```
 
 ### Testing
-
 ``` bash
 composer test
 composer lint

@@ -2,6 +2,7 @@
 
 namespace BayAreaWebPro\JsonWebToken;
 
+use BayAreaWebPro\JsonWebToken\Commands\GenerateSecretCommand;
 use Illuminate\Support\ServiceProvider;
 
 class JsonWebTokenServiceProvider extends ServiceProvider
@@ -14,6 +15,9 @@ class JsonWebTokenServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'jwt');
 
         if ($this->app->runningInConsole()) {
+            $this->commands([
+                GenerateSecretCommand::class
+            ]);
             $this->publishes([
                 __DIR__.'/../config/config.php' => config_path('jwt.php'),
             ], 'config');
