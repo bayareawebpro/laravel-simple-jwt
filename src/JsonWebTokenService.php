@@ -127,7 +127,7 @@ class JsonWebTokenService
      */
     protected static function getAlgorithm(): string
     {
-        return Config::get('jwt.algorithm');
+        return Config::get('jwt.algorithm.alias');
     }
 
     /**
@@ -179,8 +179,8 @@ class JsonWebTokenService
     protected static function getHeaders(): string
     {
         return static::encodeData([
-            "alg" => "HS512",
             "typ" => "JWT",
+            "alg" => Config::get('jwt.algorithm.name'),
         ]);
     }
 

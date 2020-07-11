@@ -10,7 +10,12 @@ return [
     /*
     |--------------------------------------------------------------------------
     | JsonWebToken Signature Algorithm
+    | Name: HS512 is an Abbreviation of HMAC using SHA-512. (used in token header)
+    | Alias: https://www.php.net/manual/en/function.hash-hmac-algos.php
     |--------------------------------------------------------------------------
     */
-    'algorithm' => 'sha256',
+    'algorithm' => [
+        'name' => 'HS512',
+        'alias' => 'sha512',
+    ]
 ];
