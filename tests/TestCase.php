@@ -1,9 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace BayAreaWebPro\PackageName\Tests;
+namespace BayAreaWebPro\JsonWebToken\Tests;
 
-use BayAreaWebPro\PackageName\PackageName;
-use BayAreaWebPro\PackageName\PackageNameServiceProvider;
+use Illuminate\Support\Facades\Config;
+use BayAreaWebPro\JsonWebToken\JsonWebToken;
+use BayAreaWebPro\JsonWebToken\JsonWebTokenServiceProvider;
+use BayAreaWebPro\JsonWebToken\Tests\Fixtures\Models\MockUser;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
@@ -15,7 +17,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
      */
     protected function getPackageProviders($app)
     {
-        return [PackageNameServiceProvider::class];
+        return [JsonWebTokenServiceProvider::class];
     }
 
     /**
@@ -26,7 +28,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function getPackageAliases($app)
     {
         return [
-            'PackageName' => PackageName::class,
+            'JsonWebToken' => JsonWebToken::class,
         ];
     }
 
@@ -36,8 +38,15 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        require __DIR__.'/Fixtures/routes.php';
         $this->withFactories(__DIR__.'/Fixtures/Factories');
         $this->loadMigrationsFrom(__DIR__ . '/Fixtures/Migrations');
-        require __DIR__.'/Fixtures/routes.php';
+        JsonWebToken::register(MockUser::class, 'token');
+
+        Config::set('auth.guards.api',[
+            'driver' => 'simple-jwt',
+            'provider' => 'users',
+            'hash' => false,
+        ]);
     }
 }

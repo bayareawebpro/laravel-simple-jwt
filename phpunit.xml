@@ -26,6 +26,7 @@
     </logging>
     <php>
         <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsm1"/>
+        <env name="JWT_SECRET" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsm1"/>
         <env name="APP_ENV" value="testing"/>
         <env name="APP_DEBUG" value="true"/>
         <env name="DB_DATABASE" value=":memory:"/>

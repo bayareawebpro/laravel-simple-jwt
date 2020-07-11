@@ -1,6 +1,6 @@
 <?php
 
-namespace BayAreaWebPro\PackageName\Tests\Fixtures\Models;
+namespace BayAreaWebPro\JsonWebToken\Tests\Fixtures\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

@@ -1,27 +1,27 @@
 <?php declare(strict_types=1);
 
-namespace BayAreaWebPro\PackageName\Tests\Unit;
+namespace BayAreaWebPro\JsonWebToken\Tests\Unit;
 
-use BayAreaWebPro\PackageName\PackageName;
-use BayAreaWebPro\PackageName\PackageNameService;
-use BayAreaWebPro\PackageName\PackageNameServiceProvider;
-use BayAreaWebPro\PackageName\Tests\TestCase;
+use BayAreaWebPro\JsonWebToken\JsonWebToken;
+use BayAreaWebPro\JsonWebToken\JsonWebTokenService;
+use BayAreaWebPro\JsonWebToken\JsonWebTokenServiceProvider;
+use BayAreaWebPro\JsonWebToken\Tests\TestCase;
 
 class ProviderTest extends TestCase
 {
     public function test_provider_is_registered()
     {
         $this->assertInstanceOf(
-            PackageNameServiceProvider::class,
-            $this->app->getProvider(PackageNameServiceProvider::class),
+            JsonWebTokenServiceProvider::class,
+            $this->app->getProvider(JsonWebTokenServiceProvider::class),
             'Provider is registered with container.'
         );
     }
 
     public function test_provider_declares_provided()
     {
-        $this->assertTrue(in_array('package-name',
-                collect(app()->getProviders(PackageNameServiceProvider::class))
+        $this->assertTrue(in_array('simple-jwt',
+                collect(app()->getProviders(JsonWebTokenServiceProvider::class))
                 ->first()
                 ->provides()
         ), 'Provider declares provided services.');
@@ -30,8 +30,8 @@ class ProviderTest extends TestCase
     public function test_container_can_resolve_instance()
     {
         $this->assertInstanceOf(
-            PackageNameService::class,
-            $this->app->make('package-name'),
+            JsonWebTokenService::class,
+            $this->app->make('simple-jwt'),
             'Container can make instance of service.'
         );
     }
@@ -39,8 +39,8 @@ class ProviderTest extends TestCase
     public function test_alias_can_resolve_instance()
     {
         $this->assertInstanceOf(
-            PackageNameService::class,
-            \PackageName::getFacadeRoot(),
+            JsonWebTokenService::class,
+            \JsonWebToken::getFacadeRoot(),
             'Alias class can make instance of service.'
         );
     }
@@ -48,8 +48,8 @@ class ProviderTest extends TestCase
     public function test_facade_can_resolve_instance()
     {
         $this->assertInstanceOf(
-            PackageNameService::class,
-            PackageName::getFacadeRoot(),
+            JsonWebTokenService::class,
+            JsonWebToken::getFacadeRoot(),
             'Facade can make instance of service.'
         );
     }
